@@ -1,33 +1,38 @@
 const usersRouter = require('express').Router();
 const path = require('path');
 const fs = require('fs').promises;
-const users = require('../data/users.json');
 
 const filePath = path.resolve('data', 'users.json');
 
-fs.readFile(filePath, { encoding: 'utf8' })
+usersRouter.get('/users', (req, res) => {
+  fs.readFile(filePath, { encoding: 'utf8' })
   .then(data => JSON.parse(data))
-  .then(data => usersRouter.get('/users', (req, res) => {
-    res.send(data);
-  }))
-  .catch(err => console.log(err));
+  .then(data => res.send(data))
+  .catch(err => {
+    console.log(err);
+    res.status(500).send({ message: 'Ошибка на сервере'})
+  })
+})
 
-const doesUserExist = (req, res, next) => {
-  const isUserId = users.some((user) => user._id == req.params.id);
+const sendUserById = (req, res) => {
+  fs.readFile(filePath, { encoding: 'utf8' })
+  .then(data => JSON.parse(data))
+  .then(users => {
+    const isUserId = users.some((user) => user._id == req.params.id);
 
-  if (!isUserId) {
-    res.status(404).send({message: '«Нет пользователя с таким id»'});
-    return;
-  }
+    if (!isUserId) {
+      res.status(404).send({message: '«Нет пользователя с таким id»'});
+      return;
+    }
 
-  next();
+    res.send(users.find(user => user._id == req.params.id))
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).send({ message: 'Ошибка на сервере'})
+  })
 };
 
-const sendUser = (req, res, next) => {
-  res.send(users.find(user => user._id == req.params.id))
-}
-
-usersRouter.get('/users/:id', doesUserExist);
-usersRouter.get('/users/:id', sendUser);
+usersRouter.get('/users/:id', sendUserById);
 
 module.exports = usersRouter;
