@@ -19,7 +19,8 @@
   },
   "homepage": "https://github.com/escar85/express-mesto#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mongoose": "^5.10.8"
   },
   "devDependencies": {
     "eslint": "^7.9.0",
