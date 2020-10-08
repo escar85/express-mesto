@@ -22,7 +22,9 @@ const createCard = (req, res) => {
 
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
+    .then(card => res.send({ data: card }))
     .catch(err => {
+      if (err.name === 'CastError') return res.status(400).send({ message: 'Несуществующий Id карточки или карточка отсутствует' })
       console.log(err);
       res.status(500).send({ message: 'Ошибка на сервере' })
     })
@@ -34,11 +36,12 @@ const likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true }
   )
-  .then(card => res.send({ data: card }))
-  .catch(err => {
-    console.log(err);
-    res.status(500).send({ message: 'Ошибка на сервере' })
-  })
+    .then(card => res.send({ data: card }))
+    .catch(err => {
+      if (err.name === 'CastError') return res.status(400).send({ message: 'Несуществующий Id карточки или карточка отсутствует' })
+      console.log(err);
+      res.status(500).send({ message: 'Ошибка на сервере' })
+    })
 }
 
 
@@ -48,11 +51,12 @@ const dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true }
   )
-  .then(card => res.send({ data: card }))
-  .catch(err => {
-    console.log(err);
-    res.status(500).send({ message: 'Ошибка на сервере' })
-  })
+    .then(card => res.send({ data: card }))
+    .catch(err => {
+      if (err.name === 'CastError') return res.status(400).send({ message: 'Несуществующий Id карточки или карточка отсутствует' })
+      console.log(err);
+      res.status(500).send({ message: 'Ошибка на сервере' })
+    })
 }
 
 module.exports = {

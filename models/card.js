@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 const cardSchema = new mongoose.Schema({
 
@@ -14,7 +15,7 @@ const cardSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator(v) {
-        return /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/g.test(v)
+        return validator.isURL(v)
       }
     }
   },

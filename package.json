@@ -1,7 +1,7 @@
 {
   "name": "express-mesto",
   "version": "1.0.0",
-  "description": "`/public` — статика, полученная в результате билда фронтенд-приложения на Реакте  \r `/data` — JSON-файлы для временной эмуляции работы с базой данных  \r `/routes` — папка с файлами роутера",
+  "description": "бэкенд на NODE.JS, Express и MongoDB",
   "main": "app.js",
   "scripts": {
     "dev": "nodemon app.js",
@@ -20,7 +20,8 @@
   "homepage": "https://github.com/escar85/express-mesto#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "mongoose": "^5.10.8"
+    "mongoose": "^5.10.8",
+    "validator": "^13.1.17"
   },
   "devDependencies": {
     "eslint": "^7.9.0",
