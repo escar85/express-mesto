@@ -1,36 +1,34 @@
 const Card = require('../models/card');
+const WrongInputDataError = require('../middlewares/errors/wrong-input-data-error');
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
     .then(cards => res.send(cards))
-    .catch(err => {
-      console.log(err);
-      res.status(500).send({ message: 'Ошибка на сервере' })
-    })
+    .catch(next);
 }
 
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const { name, link } = req.body
   Card.create({ name, link, owner: req.user._id })
     .then(card => res.send({ data: card }))
     .catch(err => {
-      if (err.name === 'ValidationError') return res.status(400).send({ message: 'Ошибка валидации. Проверьте введенные данные.' })
+      if (err.name === 'ValidationError') return new WrongInputDataError('Ошибка валидации. Проверьте введенные данные.')
       console.log(err);
-      res.status(500).send({ message: 'Ошибка на сервере' })
     })
+    .catch(next);
 }
 
-const deleteCard = (req, res) => {
+const deleteCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then(card => res.send({ data: card }))
     .catch(err => {
-      if (err.name === 'CastError') return res.status(400).send({ message: 'Несуществующий Id карточки или карточка отсутствует' })
+      if (err.name === 'CastError') return new WrongInputDataError('Несуществующий Id карточки или карточка отсутствует')
       console.log(err);
-      res.status(500).send({ message: 'Ошибка на сервере' })
     })
+    .catch(next);
 }
 
-const likeCard = (req, res) => {
+const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
@@ -38,14 +36,14 @@ const likeCard = (req, res) => {
   )
     .then(card => res.send({ data: card }))
     .catch(err => {
-      if (err.name === 'CastError') return res.status(400).send({ message: 'Несуществующий Id карточки или карточка отсутствует' })
+      if (err.name === 'CastError') return new WrongInputDataError('Несуществующий Id карточки или карточка отсутствует')
       console.log(err);
-      res.status(500).send({ message: 'Ошибка на сервере' })
     })
+    .catch(next);
 }
 
 
-const dislikeCard = (req, res) => {
+const dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
@@ -53,10 +51,10 @@ const dislikeCard = (req, res) => {
   )
     .then(card => res.send({ data: card }))
     .catch(err => {
-      if (err.name === 'CastError') return res.status(400).send({ message: 'Несуществующий Id карточки или карточка отсутствует' })
+      if (err.name === 'CastError') return new WrongInputDataError('Несуществующий Id карточки или карточка отсутствует')
       console.log(err);
-      res.status(500).send({ message: 'Ошибка на сервере' })
     })
+    .catch(next);
 }
 
 module.exports = {
