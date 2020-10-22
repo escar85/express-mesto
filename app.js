@@ -21,7 +21,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`)
-});
+});cd
 
 app.use(express.json());
 
@@ -37,14 +37,14 @@ app.get('/crash-test', () => {
 });
 
 // незащищеные маршруты
-app.post('/signin', celebrate({
+app.post('/sign-in', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(7)
   })
 }), login);
 
-app.post('/signup', celebrate({
+app.post('/sign-up', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(7),
