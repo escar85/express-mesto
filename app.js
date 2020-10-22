@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const { celebrate, Joi, errors } = require('celebrate');
+const cors = require('cors');
 
 const router = require('./routes');
 const { login, createUser } = require('./controllers/users');
@@ -25,6 +26,8 @@ app.listen(PORT, () => {
 app.use(express.json());
 
 app.use(requestLogger);
+
+app.use(cors());
 
 // жуткая вещь, нужно будет убрать потом
 app.get('/crash-test', () => {
