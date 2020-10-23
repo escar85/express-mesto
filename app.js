@@ -19,6 +19,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useFindAndModify: false
 });
 
+app.use(cors());
+
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`)
 });cd
@@ -28,14 +30,12 @@ app.use(express.json());
 app.use(requestLogger);
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", '*');
+  res.header("Access-Control-Allow-Origin", 'https://escar.students.nomoreparties.space/sign-in');
   res.header("Access-Control-Allow-Credentials", true);
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-  res.header("Access-Control-Allow-Headers", 'Origin,Access-Control-Allow-Origin,X-Requested-With,Content-Type,Accept,content-type,application/json');
+  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
+  res.header("Access-Control-Allow-Headers", 'Origin, Access-Control-Allow-Origin, X-Requested-With, Content-Type ,Accept ,content-type, application/json');
   next();
 });
-
-app.use(cors());
 
 // жуткая вещь, нужно будет убрать потом
 app.get('/crash-test', () => {
