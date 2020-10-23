@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    default: 'О себе',
     minLength: 2,
     maxLength: 30,
   },
@@ -13,6 +14,7 @@ const userSchema = new mongoose.Schema({
   about: {
     type: String,
     required: true,
+    default: 'О себе',
     minLength: 2,
     maxLength: 30,
   },
@@ -20,6 +22,7 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     required: true,
+    default: 'https://miro.medium.com/max/3600/1*HSisLuifMO6KbLfPOKtLow.jpeg',
     validate: {
        validator(v) {
        return validator.isURL(v)
