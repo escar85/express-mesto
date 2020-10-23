@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const WrongCredentialsError = require('../middlewares/errors/wrong-credentials-error');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -64,7 +65,6 @@ userSchema.statics.findUserByCredentials = function (email, password) {
           if (!matched) {
             return Promise.reject(new WrongCredentialsError('Неверные почта или пароль'));
           }
-
           return user;
         });
     });
