@@ -52,15 +52,18 @@ app.post('/sign-in', celebrate({
   })
 }), login);
 
-app.post('/sign-up', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(7)
-    // name: Joi.string().required().min(2).max(30).empty('').default('Имя'),
-    // about: Joi.string().required().min(2).max(30).empty('').default('О себе'),
-    // avatar: Joi.string().required().domain().empty('').default('https://miro.medium.com/max/3600/1*HSisLuifMO6KbLfPOKtLow.jpeg')
-  })
-}), createUser);
+
+app.post('/sign-up', createUser);
+
+// app.post('/sign-up', celebrate({
+//   body: Joi.object().keys({
+//     email: Joi.string().required().email(),
+//     password: Joi.string().required().min(7)
+//     // name: Joi.string().required().min(2).max(30).empty('').default('Имя'),
+//     // about: Joi.string().required().min(2).max(30).empty('').default('О себе'),
+//     // avatar: Joi.string().required().domain().empty('').default('https://miro.medium.com/max/3600/1*HSisLuifMO6KbLfPOKtLow.jpeg')
+//   })
+// }), createUser);
 
 // миддлвэр авторизации
 app.use(auth);
