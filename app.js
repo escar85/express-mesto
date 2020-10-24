@@ -25,10 +25,6 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`)
 });
 
-app.use(express.json());
-
-app.use(requestLogger);
-
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", '*');
   res.header("Access-Control-Allow-Credentials", true);
@@ -36,6 +32,10 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", 'Origin, Access-Control-Allow-Origin, X-Requested-With, Content-Type, Accept, content-type, application/json');
   next();
 });
+
+app.use(express.json());
+
+app.use(requestLogger);
 
 // жуткая вещь, нужно будет убрать потом
 app.get('/crash-test', () => {
