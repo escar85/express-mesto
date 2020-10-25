@@ -98,6 +98,8 @@ const getUserByToken = (req, res, next) => {
     return res.status(401).send({ message: 'Необходима авторизация' });
   }
 
+  console.log(payload);
+
   User.findById(payload)
   .then(user => res.send({ data: user }))
   .catch(err => {
