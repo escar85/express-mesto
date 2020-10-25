@@ -17,7 +17,7 @@ usersRouter.patch('/users/me', celebrate({
   })
 }), updateProfile);
 
-usersRouter.get('/users/me', getUserByToken);
+//usersRouter.get('/users/me', getUserByToken);
 
 usersRouter.patch('/users/me/avatar', celebrate({
   body: Joi.object().keys({

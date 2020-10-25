@@ -4,7 +4,7 @@ const { celebrate, Joi, errors } = require('celebrate');
 const cors = require('cors');
 
 const router = require('./routes');
-const { login, createUser } = require('./controllers/users');
+const { login, createUser, getUserByToken } = require('./controllers/users');
 
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
@@ -58,6 +58,8 @@ app.post('/sign-up', celebrate({
     password: Joi.string().required().min(7)
   })
 }), createUser);
+
+app.get('/users/me', getUserByToken);
 
 // миддлвэр авторизации
 app.use(auth);
