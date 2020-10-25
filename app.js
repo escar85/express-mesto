@@ -59,7 +59,7 @@ app.post('/sign-up', celebrate({
   })
 }), createUser);
 
-app.get('/users/me', auth);
+app.get('/users/me', getUserByToken);
 
 // миддлвэр авторизации
 app.use(auth);
