@@ -63,8 +63,9 @@ app.post('/sign-up', celebrate({
 
 // миддлвэр авторизации
 app.use(auth);
-app.get('/users/me', getUserByToken);
+
 // защищенные маршруты
+app.get('/users/me', getUserByToken);
 app.use(router);
 
 
