@@ -17,11 +17,7 @@ usersRouter.patch('/users/me', celebrate({
   })
 }), updateProfile);
 
-usersRouter.get('/users/me', celebrate({
-  headers: Joi.object().keys({
-    Authorization: Joi.string().required()
-  }).unknown(true)
-}), getUserByToken);
+usersRouter.get('/users/me', getUserByToken);
 
 usersRouter.patch('/users/me/avatar', celebrate({
   body: Joi.object().keys({
