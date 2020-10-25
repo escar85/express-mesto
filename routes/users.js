@@ -1,5 +1,5 @@
 const usersRouter = require('express').Router();
-const { getUsers, getUserById, updateProfile, updateAvatar } = require('../controllers/users');
+const { getUsers, getUserById, updateProfile, updateAvatar, getUserByToken } = require('../controllers/users');
 const { celebrate, Joi } = require('celebrate');
 
 usersRouter.get('/users', getUsers);
@@ -16,6 +16,12 @@ usersRouter.patch('/users/me', celebrate({
     about: Joi.string().required().min(2).max(30)
   })
 }), updateProfile);
+
+usersRouter.get('/users/me', celebrate({
+  headers: Joi.object().keys({
+    Authorization: Joi.string().required()
+  }).unknown(true)
+}), getUserByToken);
 
 usersRouter.patch('/users/me/avatar', celebrate({
   body: Joi.object().keys({
