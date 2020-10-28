@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const router = require('./routes');
 const { login, createUser, getUserByToken } = require('./controllers/users');
+const notFoundError = require('./middlewares/errors/not-found-error');
 
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
@@ -45,14 +46,14 @@ app.get('/crash-test', () => {
 });
 
 // незащищеные маршруты
-app.post('/sign-in', celebrate({
+app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(7)
   })
 }), login);
 
-app.post('/sign-up', celebrate({
+app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(7)
@@ -69,8 +70,8 @@ app.get('/users/me', getUserByToken);
 app.use(router);
 
 
-app.all('*', (req, res) => {
-  res.status(404).send({ message: '«Запрашиваемый ресурс не найден»' });
+app.all('*', (req, res, next) => {
+  next(new notFoundError('Запрашиваемый ресурс не найден'))
 });
 
 app.use(errorLogger);

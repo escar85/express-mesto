@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const WrongCredentialsError = require('./errors/wrong-credentials-error');
 
 module.exports = (req, res, next) => {
 
@@ -7,7 +8,7 @@ module.exports = (req, res, next) => {
 
   // если загаловка нет или он не начинается с "Bearer" - вернем ошибку авторизации
   if (!authorization && !authorization.startsWith('Bearer ')) {
-    return res.status(401).send({ message: 'Необходима авторизация' });
+    return new WrongCredentialsError('Wrong')  // return res.status(401).send({ message: 'Необходима авторизация' });
   }
 
   // извлекаем токен
@@ -18,11 +19,9 @@ module.exports = (req, res, next) => {
   try {
     payload = jwt.verify(token, 'f385894f20935f1d2fbeae7c08149367c7c867633e149850056bc3e1149695a1');
   } catch (err) {
-    return res.status(401).send({ message: 'Необходима авторизация' });
+    return new WrongCredentialsError('Wrong') //res.status(401).send({ message: 'Необходима авторизация' });
   }
 
-
-  req.user = payload;
-
+  req.user = payload
   next();
 }

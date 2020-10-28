@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const NotFoundError = require('../middlewares/errors/not-found-error');
 const WrongInputDataError = require('../middlewares/errors/wrong-input-data-error');
+const WrongCredentialsError = require('../middlewares/errors/wrong-credentials-error');
+const MongoError = require('../middlewares/errors/mongo-error');
 
 const getUsers = (req, res, next) => {
   User.find({})
@@ -25,16 +27,26 @@ const createUser = (req, res, next) => {
   // bcrypt.hash хэшируем пароль, добавляем соль "10"
   bcrypt.hash(req.body.password, 10)
     .then(hash => User.create({
-      // name: req.body.name,
-      // about: req.body.about,
-      // avatar: req.body.avatar,
       email: req.body.email,
       password: hash
+    }, {
+      new: true,
+      runValidators: true,
+      upsert: true
     }))
-    .then(user => res.send({ data: user }))
+
     .catch(err => {
-      if (err.name === 'ValidationError') return new WrongInputDataError('Ошибка валидации. Проверьте введенные данные.')
-      console.log(err);
+      console.log(err)
+      if (err.name === 'ValidationError') {
+        throw new WrongInputDataError('Ошибка валидации. Проверьте введенные данные.')
+      } else if (err.name === 'MongoError' || err.code === 11000) {
+        throw new MongoError('Пользователь с таким E-Mail уже зарегистрирован')
+      }
+    })
+    .then((user) => {
+      const newUser = user;
+      newUser.password = '';
+      res.send({ data: newUser });
     })
     .catch(next);
 }
@@ -70,7 +82,7 @@ const updateAvatar = (req, res, next) => {
     .catch(next);
 }
 
-const login = (req, res, next ) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
@@ -86,7 +98,7 @@ const getUserByToken = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization && !authorization.startsWith('Bearer ')) {
-    return res.status(401).send({ message: 'Необходима авторизация' });
+    throw new WrongCredentialsError('Wrong')  //return res.status(401).send({ message: 'Необходима авторизация' });
   }
 
   const token = authorization.replace('Bearer ', '');
@@ -95,18 +107,16 @@ const getUserByToken = (req, res, next) => {
   try {
     payload = jwt.verify(token, 'f385894f20935f1d2fbeae7c08149367c7c867633e149850056bc3e1149695a1');
   } catch (err) {
-    return res.status(401).send({ message: 'Необходима авторизация' });
+    return new WrongCredentialsError('wrong'); // res.status(401).send({ message: 'Необходима авторизация' });
   }
 
-  console.log(payload);
-
   User.findById(payload)
-  .then(user => res.send({ data: user }))
-  .catch(err => {
-    if (err.name === 'CastError') return new NotFoundError('Пользователь с таким id отсутствует')
-    console.log(err);
-  })
-  .catch(next)
+    .then(user => res.send({ data: user }))
+    .catch(err => {
+      if (err.name === 'CastError') return new NotFoundError('Пользователь с таким id отсутствует')
+      console.log(err);
+    })
+    .catch(next)
 }
 
 module.exports = {
