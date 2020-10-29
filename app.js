@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const { celebrate, Joi, errors } = require('celebrate');
@@ -26,14 +27,6 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`)
 });
 
-// app.use(function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", '*');
-//   res.header("Access-Control-Allow-Credentials", true);
-//   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, PATCH, DELETE, OPTIONS');
-//   res.header("Access-Control-Allow-Headers", 'Origin, Access-Control-Allow-Origin, Authorization, X-Requested-With, Content-Type, Accept, content-type, application/json');
-//   next();
-// });
-
 app.use(express.json());
 
 app.use(requestLogger);
@@ -60,15 +53,12 @@ app.post('/signup', celebrate({
   })
 }), createUser);
 
-
-
 // миддлвэр авторизации
 app.use(auth);
 
 // защищенные маршруты
 app.get('/users/me', getUserByToken);
 app.use(router);
-
 
 app.all('*', (req, res, next) => {
   next(new notFoundError('Запрашиваемый ресурс не найден'))
@@ -93,8 +83,3 @@ app.use((err, req, res, next) => {
         : message
     });
 });
-
-
-
-
-// NOT A SUPER-SECRET-KEY f385894f20935f1d2fbeae7c08149367c7c867633e149850056bc3e1149695a1
