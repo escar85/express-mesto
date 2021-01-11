@@ -7,9 +7,7 @@
 ## Используемые технологии
 
 ### Проект разработан на Node.js, Express и MongoDB.
-
-### Ссылка на сайт:
-### www.escar.students.nomoreparties.space
+### Реализована валидация входящих запросов с помощью Joi/Celebrate
 
 ### Ссылка на репозиторий с фронтендом:
 ### https://github.com/escar85/react-mesto-auth
